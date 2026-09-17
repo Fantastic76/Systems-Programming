@@ -10,5 +10,5 @@ int main() {
         string i; cin >> i;
         if (i == "n" || i == "N") break;
     }
-    for (Student i : Class) i.print();
+    for (Student i : Class) cout << i;
 }
