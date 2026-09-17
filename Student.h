@@ -14,4 +14,5 @@ public:
     void clear();
     double results();
     friend ostream& operator<< (ostream& out, const Student& A);
+    friend istream& operator>> (istream& in, const Student& A);
 };
