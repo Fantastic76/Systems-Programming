@@ -13,7 +13,5 @@ public:
     Student& Student operator=(const Student &A)
     void clear();
     double results();
-    friend ostream& operator<< (ostream& out, const Student& A) {
-           cout << name << "|" << surname << "|" << exam << "\n";
-    }
+    friend ostream& operator<< (ostream& out, const Student& A);
 };
