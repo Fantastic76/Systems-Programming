@@ -28,6 +28,10 @@ void Student :: print() {
     cout << exam << "\n";
 }
 
+ostream& operator<< (ostream& out, const Student& A) {
+  cout << name << "|" << surname << "|" << exam << "\n";
+}
+
 Student :: ~Student() {
     name.clear();
     surname.clear();
