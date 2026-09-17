@@ -34,6 +34,15 @@ Student :: ~Student() {
     Points.clear();
     exam = 0;
 }
+Student& Student :: operator=(const Student &A) {
+    if (this != &A) {
+        name = A.name;
+        surname = A.surname;
+        Points = A.Points;
+        exam = A.exam;
+    }
+    return *this;
+}
 void Student :: clear() {
     name.clear();
     surname.clear();
