@@ -1,7 +1,5 @@
 
 #include "Student.h"
-
-
 Student::Student() {
     cout << "Input name: "; cin >> name;
     cout << "Input surname: "; cin >> surname;
@@ -30,6 +28,22 @@ void Student :: print() {
 
 ostream& operator<< (ostream& out, const Student& A) {
   cout << name << "|" << surname << "|" << exam << "\n";
+  return out;
+}
+istream& operator>> (istream& in, const Student& A) {
+    cout << "Input name: "; cin >> name;
+    cout << "Input surname: "; cin >> surname;
+    int n;
+    while (true) {
+        cin >> n;
+        Points.push_back(n);
+        cout << "Want to input another point ? Y/N";
+        string i; cin >> i;
+        if (i == "n" || i == "N") break;
+    }
+    cout << "Input exam: ";
+    cin >> exam;
+    return in;
 }
 
 Student :: ~Student() {
