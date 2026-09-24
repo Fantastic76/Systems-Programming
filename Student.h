@@ -10,10 +10,14 @@ private:
 public:
     Student();
     Student(string n, string s, vector<int> P, int E);
+    Student(const Student& B);
     ~Student();
     Student& operator=(const Student& A);
     void clear();
-    double results();
+    void average();
+    void median();
     friend ostream& operator<< (ostream& out, const Student& A);
     friend istream& operator>> (istream& in, const Student& A);
+    string getName();
+    double getFinalGrade();
 };
