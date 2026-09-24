@@ -2,15 +2,16 @@
 #include "lib.h"
 
 class Student {
+private:
     string name, surname;
     vector <int> Points;
     int exam;
+    double final;
 public:
     Student();
     Student(string n, string s, vector<int> P, int E);
-    void print();
     ~Student();
-    Student& Student operator=(const Student &A)
+    Student& operator=(const Student& A);
     void clear();
     double results();
     friend ostream& operator<< (ostream& out, const Student& A);
