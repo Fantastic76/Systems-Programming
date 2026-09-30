@@ -32,27 +32,34 @@ Student::Student(const Student& A) {
 }
 
 ostream& operator<< (ostream& out, const Student& A) {
-  cout << A.name << "|" << A.surname << "|" << A.final << "\n";
+  out << A.name << "|" << A.surname << "|" << A.final << "\n";
   return out;
 }
-istream& operator>> (istream& in, Student& A) {
-    string name, surname;
-    vector <int> Points;
+
+istream& operator>>(istream& in, Student& A)
+{
+    string name;
+    string surname;
+    vector<int> points;
     int exam;
-    cout << "Input name: "; in >> name;
-    cout << "Input surname: "; in >> surname;
-    cout << "Input homework points: ";
-    int n;
-    while (true) {
-        in >> n;
-        Points.push_back(n);
-        cout << "Would you like to input another point ? Y/N";
-        string i; in >> i;
-        if (i == "n" || i == "N") break;
+
+    if (in >> name >> surname)
+    {
+        int point;
+
+        // Read homework points
+        for (int i = 0; i < 5; i++)
+        {
+            in >> point;
+            points.push_back(point);
+        }
+
+        // Read exam
+        in >> exam;
+
+        A = Student(name, surname, points, exam);
     }
-    cout << "Input exam: ";
-    in >> exam;
-    A = Student(name, surname, Points, exam);
+
     return in;
 }
 
