@@ -1,69 +1,31 @@
-#include "Student.h"
-bool Alphabetical(Student A, Student B) {
-    return A.getName() >= B.getName();
-}
-bool FinalNote(Student A, Student B) {
-    return A.getFinalGrade() >= B.getFinalGrade();
-}
+#include "Classroom.h"
+#include "Input.h"
 
-void results(char i, Student& B) {
-    if (i == '1') {
-        B.average();
-    }
-    else {
-        B.median();
-    }
-}
 int main() {
-    vector <Student> Class;
-    ifstream file("Students.txt");
-    if (!file)
-    {
-        cout << "Error: Could not open Students.txt" << endl;
+    try {
+        Classroom group;
+        group.loadFromFile("Students.txt");
+
+        Method method = static_cast<Method>(readChoice(
+            "Would you like to use the average or the median to calculate the final grade?\n"
+            "1: Average, 2: Median\n> ", 1, 2));
+
+        SortOrder order = static_cast<SortOrder>(readChoice(
+            "How would you like to sort the student list?\n"
+            "1: By name (alphabetical), 2: By highest final grade, 3: By lowest final grade\n> ", 1, 3));
+
+        group.sort(order, method);
+        group.print(cout, method);
+        group.saveToFile("Answer.txt", method);
+        cout << "\nResults saved to Answer.txt\n";
+    }
+    catch (const invalid_argument& e) {
+        cerr << "Data error: " << e.what() << "\n";
+        return 2;
+    }
+    catch (const exception& e) {
+        cerr << "Error: " << e.what() << "\n";
         return 1;
     }
-    char formula;
-    string header;
-    getline(file, header);
-    cout << "Would you like to use the average or the median to calculate the final grade?" << "\n";
-    cout << "1: Average, 2: Median";
-    cin >> formula;
-    Student student;
-    while (file >> student)
-    {
-        results(formula, student);
-        Class.push_back(student);
-    }
-    file.close();
-   
-    cout << "How would you to sort the student list?" << "\n";
-    cout << "1: By name (Alphabetical), 2: By highest final note, 3: By lowest final point" << "\n";
-    char sel;
-    cin >> sel;
-    switch (sel) {
-    case '1':
-        sort(Class.begin(), Class.end(), Alphabetical);
-        break;
-    case '2' :
-        sort(Class.begin(), Class.end(), FinalNote);
-        break;
-    case '3' :
-        sort(Class.begin(), Class.end(), !FinalNote);
-        break;
-    default:
-       cout << "No method was choosen, the class will not be sorted" << "\n";
-       break;
-    }
-    cout << fixed << setprecision(2);
-
-    cout << left
-        << setw(15) << "Name"
-        << setw(15) << "Surname"
-        << setw(15) << "Final (Avg.)"
-        << setw(15) << "Final (Med.)"
-        << endl;
-
-    cout << "------------------------------------------------------------"
-        << endl;
-    for (Student i : Class) cout << i;
+    return 0;
 }
