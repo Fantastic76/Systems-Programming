@@ -5,6 +5,7 @@ static bool Alphabetical(Student A, Student B) {
 int main() {
     vector <Student> Class;
     ifstream file("Students.txt");
+    ofstream anwser("Anwser.txt");
     if (!file)
     {
         cout << "Error: Could not open Students.txt" << endl;
@@ -62,4 +63,5 @@ int main() {
     cout << "------------------------------------------------------------"
         << endl;
     for (Student i : Class) cout << i << i.getFinalGrade(formula) << endl;
+    for (Student i : Class) anwser << i << i.getFinalGrade(formula) << endl;
 }

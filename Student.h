@@ -19,4 +19,5 @@ public:
     double getAverage();
     double getMedian();
     const double getFinalGrade(char i);
+    void generateScores(int homeworkCount = 15, int minScore = 1, int maxScore = 10);
 };

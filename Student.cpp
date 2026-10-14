@@ -89,3 +89,10 @@ const double Student::getFinalGrade(char i) {
         return getMedian();
     }
 }
+void Student::generateScores(int homeworkCount, int minScore, int maxScore) {
+    static mt19937 rng(random_device{}());
+    uniform_int_distribution<int> dist(minScore, maxScore);
+    Points.assign(homeworkCount, 0);
+    for (int& p : Points) p = dist(rng);
+    exam = dist(rng);
+}
