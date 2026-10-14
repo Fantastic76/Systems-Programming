@@ -1,22 +1,11 @@
 #include "Student.h"
-bool Alphabetical(Student A, Student B) {
-    return A.getName() >= B.getName();
-}
-bool FinalNote(Student A, Student B) {
-    return A.getFinalGrade() >= B.getFinalGrade();
-}
-
-void results(char i, Student& B) {
-    if (i == '1') {
-        B.average();
-    }
-    else {
-        B.median();
-    }
+static bool Alphabetical(Student A, Student B) {
+    return A.getName() > B.getName();
 }
 int main() {
     vector <Student> Class;
     ifstream file("Students.txt");
+    ofstream anwser("Anwser.txt");
     if (!file)
     {
         cout << "Error: Could not open Students.txt" << endl;
@@ -31,8 +20,7 @@ int main() {
     Student student;
     while (file >> student)
     {
-        results(formula, student);
-        Class.push_back(student);
+        Class.push_back(student); 
     }
     file.close();
    
@@ -44,11 +32,20 @@ int main() {
     case '1':
         sort(Class.begin(), Class.end(), Alphabetical);
         break;
-    case '2' :
-        sort(Class.begin(), Class.end(), FinalNote);
+    case '2':
+        sort(Class.begin(), Class.end(),
+            [formula](Student& A,Student& B)
+            {
+                return A.getFinalGrade(formula) > B.getFinalGrade(formula);
+            });
         break;
-    case '3' :
-        sort(Class.begin(), Class.end(), !FinalNote);
+
+    case '3':
+        sort(Class.begin(), Class.end(),
+            [formula](Student& A, Student& B)
+            {
+                return A.getFinalGrade(formula) < B.getFinalGrade(formula);
+            });
         break;
     default:
        cout << "No method was choosen, the class will not be sorted" << "\n";
@@ -65,5 +62,6 @@ int main() {
 
     cout << "------------------------------------------------------------"
         << endl;
-    for (Student i : Class) cout << i;
+    for (Student i : Class) cout << i << i.getFinalGrade(formula) << endl;
+    for (Student i : Class) anwser << i << i.getFinalGrade(formula) << endl;
 }
