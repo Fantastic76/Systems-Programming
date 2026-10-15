@@ -1,102 +1,68 @@
-
 #include "Student.h"
-Student::Student() {
-    cout << "Input name: "; cin >> name;
-    cout << "Input surname: "; cin >> surname;
-    cout << "Input homework points: ";
-    int n;
-    while (true) {
-        cin >> n;
-        Points.push_back(n);
-        cout << "Would you like to input another point ? Y/N";
-        string i; cin >> i;
-        if (i == "n" || i == "N") break;
-    }
-    cout << "Input exam: ";
-    cin >> exam;
-    final = 0;
-}
-Student::Student(string n, string s, vector<int> P, int E) {
-    name = n;
-    surname = s;
-    Points = P;
-    exam = E;
-    final = 0;
-}
-Student::Student(const Student& A) {
-       name = A.name;
-       surname = A.surname;
-       Points = A.Points;
-       exam = A.exam;
-       final = 0;
+
+static void checkScore(int value, const string& what) {
+    if (value < Student::MIN_SCORE || value > Student::MAX_SCORE)
+        throw invalid_argument(what + " must be between " + to_string(Student::MIN_SCORE) +
+                               " and " + to_string(Student::MAX_SCORE) + ", got " + to_string(value));
 }
 
-ostream& operator<< (ostream& out, const Student& A) {
-  out << A.name << "|" << A.surname << "|" << A.final << "\n";
-  return out;
+Student::Student() : name("0"), surname("0"), exam(0) {}
+
+Student::Student(string n, string s, vector<int> p, int e)
+    : name(move(n)), surname(move(s)), points(move(p)), exam(e) {
+    if (points.empty())
+        throw invalid_argument("Student " + name + " " + surname + " has no homework points");
+    for (int v : points) checkScore(v, "Homework score");
+    checkScore(exam, "Exam score");
+
+    // Final grades are calculated once, so sorting/splitting millions of students stays fast.
+    average = (double)accumulate(points.cbegin(), points.cend(), 0) / points.size() * 0.4 + exam * 0.6;
+
+    vector<int> sorted = points;
+    sort(sorted.begin(), sorted.end());
+    size_t n2 = sorted.size();
+    double med = (n2 % 2 != 0) ? sorted[n2 / 2] : (sorted[n2 / 2 - 1] + sorted[n2 / 2]) / 2.0;
+    median = med * 0.4 + exam * 0.6;
 }
 
-istream& operator>>(istream& in, Student& A)
-{
-    string name;
-    string surname;
-    vector<int> points;
+void Student::requireData() const {
+    if (points.empty()) throw domain_error("Student has no homework points, final grade is undefined");
+}
+
+void Student::clear() {
+    name.clear();
+    surname.clear();
+    points.clear();
+    exam = 0;
+    average = median = 0;
+}
+
+double Student::getAverage() const { requireData(); return average; }
+double Student::getMedian() const  { requireData(); return median; }
+
+double Student::getFinalGrade(Method m) const {
+    return (m == Method::Average) ? getAverage() : getMedian();
+}
+
+ostream& operator<<(ostream& out, const Student& A) {
+    out << left << setw(15) << A.name << setw(15) << A.surname;
+    return out;
+}
+
+istream& operator>>(istream& in, Student& A) {
+    string name, surname;
+    if (!(in >> name >> surname))              // normal end of file / no more records
+        return in;
+
+    vector<int> pts(Student::HOMEWORK_COUNT);
+    for (int& p : pts)
+        if (!(in >> p))
+            throw invalid_argument("Incomplete or invalid homework data for " + name + " " + surname);
+
     int exam;
+    if (!(in >> exam))
+        throw invalid_argument("Missing or invalid exam score for " + name + " " + surname);
 
-    if (in >> name >> surname)
-    {
-        int point;
-
-        // Read homework points
-        for (int i = 0; i < 5; i++)
-        {
-            in >> point;
-            points.push_back(point);
-        }
-
-        // Read exam
-        in >> exam;
-
-        A = Student(name, surname, points, exam);
-    }
-
+    A = Student(name, surname, move(pts), exam);   // constructor validates the ranges
     return in;
 }
-
-Student :: ~Student() {
-    name.clear();
-    surname.clear();
-    Points.clear();
-    exam = 0;
-}
-Student& Student :: operator=(const Student &A) {
-    if (this != &A) {
-        name = A.name;
-        surname = A.surname;
-        Points = A.Points;
-        exam = A.exam;
-    }
-    return *this;
-}
-void Student :: clear() {
-    name.clear();
-    surname.clear();
-    Points.clear();
-    exam = 0;
-}
-void Student :: average() {
-    double average;
-    average = (double) accumulate(Points.cbegin(), Points.cend(), 0) / Points.size();
-    final = (average * 0.4 + exam * 0.6);
-}
-void Student::median() {
-    double median;
-    sort(Points.begin(), Points.end());
-    if (Points.size() % 2 != 0) median = (double)Points[Points.size() / 2];
-    else median = (double)(Points[(Points.size() - 1) / 2] + Points[Points.size() / 2]) / 2.0;
-    final = (median * 0.4 + exam * 0.6);
-}
-
-
-string Student:: getName() { return name; }
-double Student::getFinalGrade() { return final;}
