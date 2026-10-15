@@ -7,8 +7,11 @@ enum class Method { Average = 1, Median = 2 };
 class Student {
 private:
     string name, surname;
-    vector<int> points;
+    Container<int> points;
     int exam;
+    double average = 0, median = 0;   // final grades, computed once in the constructor
+
+    void requireData() const;
 
 public:
     static const int HOMEWORK_COUNT = 15;
@@ -17,14 +20,14 @@ public:
 
     Student();
     // Throws std::invalid_argument if points are empty or any score is out of range.
-    Student(string n, string s, vector<int> p, int e);
+    Student(string n, string s, Container<int> p, int e);
 
     void clear();
 
     const string& getName() const { return name; }
     const string& getSurname() const { return surname; }
 
-    // Both throw std::domain_error if the student has no homework points.
+    // All throw std::domain_error if the student has no homework points.
     double getAverage() const;
     double getMedian() const;
     double getFinalGrade(Method m) const;
