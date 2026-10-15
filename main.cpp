@@ -4,26 +4,41 @@ static bool Alphabetical(Student A, Student B) {
 }
 int main() {
     vector <Student> Class;
-    ifstream file("Students.txt");
-    ofstream anwser("Anwser.txt");
-    if (!file)
-    {
-        cout << "Error: Could not open Students.txt" << endl;
-        return 1;
+    char source;
+    cout << "Where should the students come from?" << "\n";
+    cout << "1: Read from Students.txt, 2: Generate random students" << "\n";
+    cin >> source;
+
+    if (source == '2') {
+        int count;
+        cout << "How many students to generate? ";
+        cin >> count;
+        for (int i = 1; i <= count; i++) {
+            Student s("Name" + to_string(i), "Surname" + to_string(i), {}, 0);
+            s.generateScores();  
+            Class.push_back(s);
+        }
+    }
+    else {
+        ifstream file("Students.txt");
+        if (!file)
+        {
+            cout << "Error: Could not open Students.txt" << endl;
+            return 1;
+        }
+        string header;
+        getline(file, header);
+        Student student;
+        while (file >> student)
+        {
+            Class.push_back(student);
+        }
+        file.close();
     }
     char formula;
-    string header;
-    getline(file, header);
     cout << "Would you like to use the average or the median to calculate the final grade?" << "\n";
     cout << "1: Average, 2: Median";
     cin >> formula;
-    Student student;
-    while (file >> student)
-    {
-        Class.push_back(student); 
-    }
-    file.close();
-   
     cout << "How would you to sort the student list?" << "\n";
     cout << "1: By name (Alphabetical), 2: By highest final note, 3: By lowest final point" << "\n";
     char sel;
@@ -62,6 +77,7 @@ int main() {
 
     cout << "------------------------------------------------------------"
         << endl;
+    ofstream anwser("Anwser.txt");
     for (Student i : Class) cout << i << i.getFinalGrade(formula) << endl;
     for (Student i : Class) anwser << i << i.getFinalGrade(formula) << endl;
 }
