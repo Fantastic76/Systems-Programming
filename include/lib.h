@@ -1,0 +1,19 @@
+#pragma once
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <list>
+#include <deque>
+#include <iterator>
+#include <numeric>
+#include <string>
+#include <algorithm>
+#include <functional>
+#include <iomanip>
+#include <stdexcept>
+#include <limits>
+#include <random>
+#include <chrono>
+#include <utility>
+#include <type_traits>
+using namespace std;
