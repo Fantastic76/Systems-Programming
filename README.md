@@ -38,7 +38,7 @@ strategy 1, and much more for 10 000 000 students.
 
 ### 2. Build with Make (Linux, macOS, WSL)
 ```bash
-git clone <your-repository-url>
+git clone <https://github.com/Fantastic76/Systems-Programming.git>
 cd <repository-folder>
 make            # builds ./studentsort  (objects go to build/)
 ```
